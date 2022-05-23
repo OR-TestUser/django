@@ -1,7 +1,7 @@
 """Redis cache backend."""
 
-import random
 import re
+import secrets
 
 from django.core.cache.backends.base import DEFAULT_TIMEOUT, BaseCache
 from django.core.serializers.base import PickleSerializer
@@ -60,7 +60,7 @@ class RedisCacheClient:
         # otherwise read from the first server.
         if write or len(self._servers) == 1:
             return 0
-        return random.randint(1, len(self._servers) - 1)
+        return secrets.choice(range(1, len(self._servers)))
 
     def _get_connection_pool(self, write):
         index = self._get_connection_pool_index(write)
